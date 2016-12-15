@@ -3,6 +3,9 @@
 1) input Überprüfung, fehler Behandlung
 2) resolution für beide achsen oder Insgesamte anzahl an Pixel, ungenauigkeiten bei Auflösungsberechnung
 
+E-Mail gesendet
+Antwort:
+
 
 
 Auflösung: An die achsen anpasse bzw Verhältnis erstellen 
