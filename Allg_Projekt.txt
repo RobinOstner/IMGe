@@ -1,7 +1,7 @@
 ﻿Fragen an Tutorin:
 
 1) input Überprüfung, fehler Behandlung
-2) resolution für beide achsen oder Insgesamte anzahl an Pixel
+2) resolution für beide achsen oder Insgesamte anzahl an Pixel, ungenauigkeiten bei Auflösungsberechnung
 
 
 
