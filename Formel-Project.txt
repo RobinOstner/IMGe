@@ -31,11 +31,28 @@ Schleife{//über Array
 	
 	Schleife{//über i (Formelanwendung)
 	
+		//Erste Version:				5 Register	Letztendlich gebraucht: 2 Register für Zahl(reel/imag) und 1 Reg für Arrayplatz
 		//z^2
 		Mul Wert3 Wert1 Wert1		//real^2	//Oder besser mit addit
 		Mul Wert4 Wert2 Wert2		//imag^2	//oder auch mit addit
 		Mul Wert5 Wert1 Wert2		//real*imag*2	//genauso
 		Add Wert5 Wert5 Wert5		
 		Mul Wert4 Wert4 #-1		//Einrechnen von i^2=-1
-		CMP(
+		//Addieren von c fehlt noch
+		CMP (z(i+1)-z(i)) Abbruchsdelta
+
+		//Platzsparendere Umsetzung in Arbeit:		4 Register	Letztendlich: 2 Monogebrauch und 1 Reg für Arrayplatz
+		Mul Wert3 Wert1 Wert1	//Ergebnis: reel
+		Mul Wert4 Wert2 Wert2	//Ergebnis: reel
+		Sub Wert3 Wert3 Wert4	//reeler Anteil
+		Mul Wert4 Wert1 Wert2	//Ergebnis: imag
+		Add Wert4 Wert4 Wert4
+		//Addieren von c fehlt noch
 	}
+
+//Nebenrechnung
+Mult als Addit:
+Schleife (solang z>=1){
+	Add rx rx ry
+	Sub z z #1
+}
