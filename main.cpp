@@ -53,14 +53,23 @@ int invalidInput(char* input){
 
 
 
-void createBMP(unsigned char* image_data, int w, int h){
+void createBMP(char* image_data, int w, int h){
+    w=4;
+    h=2;
     FILE *f;
-    int filesize = 54 + 3*1*1;
+   // int filesize = 54 + 3*w*h;
+
+
+
 
     unsigned char bmpfileheader[14] = {'B','M', 0,0,0,0, 0,0,0,0, 54,0,0,0};
     unsigned char bmpinfoheader[40] = {40,0,0,0, 0,0,0,0, 0,0,0,0, 1,0, 24,0};
-    unsigned char bmpcontent[6] = {0,0,255};
+    unsigned char bmpcontent[9] = {255,0,0,0,255,0,0,0,255};
     unsigned char bmppad[3] = {0,0,0};
+
+    int padSize  = (4-3* w%4)%4;
+    int sizeData = w*h*3 + h*padSize;
+    int filesize  = sizeData + sizeof(bmpfileheader) + sizeof(bmpinfoheader);
 
 /* Construct header with filesize part */
     bmpfileheader[ 2] = (unsigned char)(filesize    );
@@ -77,10 +86,33 @@ void createBMP(unsigned char* image_data, int w, int h){
     bmpinfoheader[10] = (unsigned char)(       h>>16);
     bmpinfoheader[11] = (unsigned char)(       h>>24);
 
+    bmpfileheader[20] = (unsigned char)( sizeData    );
+    bmpfileheader[21] = (unsigned char)( sizeData>> 8);
+    bmpfileheader[22] = (unsigned char)( sizeData>>16);
+    bmpfileheader[23] = (unsigned char)( sizeData>>24);
+
     f = fopen("baked_Mandelbrot.bmp","wb");
     fwrite(bmpfileheader,1,14,f);
     fwrite(bmpinfoheader,1,40,f);
-    fwrite(bmpcontent,3,6,f);
+
+
+       /* for(int j=0;j<3;j++){
+            bmpcontent[i]=255;
+        }
+        bmpcontent[0]= bmpcontent[0]*(image_data[i]-48)/9;
+        bmpcontent[1]= bmpcontent[1]*(image_data[i]-48)/9;
+        bmpcontent[2]= bmpcontent[2]*(image_data[i]-48)/9;*/
+
+
+
+    fwrite(bmpcontent, 9, 9, f);
+
+
+
+
+
+
+
 
     fclose(f);
 }
@@ -192,7 +224,7 @@ int main(int argc, char **argv) {
         /*
          * Creating BMP FILE
          */
-        createBMP("Hello", 1,1);
+        createBMP("Hello", 1920,1080);
 
         //Endzeit des algorithmus
         time_t end;
