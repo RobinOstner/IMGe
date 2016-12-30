@@ -7,6 +7,9 @@
 #include <limits.h>
 #include <cmath>
 #include <string>
+#include <unistd.h>
+//#include <wingdi.h>
+
 
 // TODO: C-Funktion implementieren
 // TODO: ASM-Funktion importieren
@@ -14,6 +17,7 @@
 // TODO: Benchmark-Loop-Funktion implementieren
 
 // TODO: Test-Funktion implementieren
+
 
 
 //extern void _asm_do_nothing();
@@ -41,15 +45,65 @@ int invalidInput(char* input){
         }
     }
 
-    if(input[0]==0 || (input[1] > '0'  && input[1]<='9')){
+    if(input[0]==0 && (input[1] > '0'  && input[1]<='9')){
         return 1;
     }
     return -1;
 }
 
+
+
+void createBMP(unsigned char* image_data, int w, int h){
+    FILE *f;
+    int filesize = 54 + 3*1*1;
+
+    unsigned char bmpfileheader[14] = {'B','M', 0,0,0,0, 0,0,0,0, 54,0,0,0};
+    unsigned char bmpinfoheader[40] = {40,0,0,0, 0,0,0,0, 0,0,0,0, 1,0, 24,0};
+    unsigned char bmpcontent[6] = {0,0,255};
+    unsigned char bmppad[3] = {0,0,0};
+
+/* Construct header with filesize part */
+    bmpfileheader[ 2] = (unsigned char)(filesize    );
+    bmpfileheader[ 3] = (unsigned char)(filesize>> 8);
+    bmpfileheader[ 4] = (unsigned char)(filesize>>16);
+    bmpfileheader[ 5] = (unsigned char)(filesize>>24);
+
+    bmpinfoheader[ 4] = (unsigned char)(       w    );
+    bmpinfoheader[ 5] = (unsigned char)(       w>> 8);
+    bmpinfoheader[ 6] = (unsigned char)(       w>>16);
+    bmpinfoheader[ 7] = (unsigned char)(       w>>24);
+    bmpinfoheader[ 8] = (unsigned char)(       h    );
+    bmpinfoheader[ 9] = (unsigned char)(       h>> 8);
+    bmpinfoheader[10] = (unsigned char)(       h>>16);
+    bmpinfoheader[11] = (unsigned char)(       h>>24);
+
+    f = fopen("baked_Mandelbrot.bmp","wb");
+    fwrite(bmpfileheader,1,14,f);
+    fwrite(bmpinfoheader,1,40,f);
+    fwrite(bmpcontent,3,6,f);
+
+    fclose(f);
+}
+
+void fillArray(char* picture, long yRes, long xRes){
+
+    //Array lang laufen
+    for(int i=0;i<yRes;i++){
+        for(int j=0;j<xRes;j++){
+
+
+            //Zahl iterativ brechnen
+
+
+        }
+
+    }
+
+}
 //auflösung und bereich
 
 int main(int argc, char **argv) {
+
     if (argc >0) {
         //zeitmessung beginn bei erfolgreichen ausführen des Programmes
         //Startzeipunkt setzen
@@ -68,7 +122,11 @@ int main(int argc, char **argv) {
         //Kommandozeilen Argumente Anzahl checken bei flascher Anzahl beenden.
         if(argc == 6) {
 
+            printf("parsing started\n");
+
+
            for(int i=1;i<6;i++){
+
                if(invalidInput(argv[i])==1){
                    printf("\nFehlerhafte Eingabe. Bitte geben sie ein /main.c int int int int int. \nProgramm beendet \nErste Stelle");
                    return -1;
@@ -76,8 +134,13 @@ int main(int argc, char **argv) {
            }
 
             for(int i=1;i<6;i++) {
+
                 char *error = NULL;
-                long current = strtol(argv[1], &error, 10);
+                long current;
+
+                if(atoi(argv[i])!=0) {
+                    current = strtol(argv[1], &error, 10);
+                }
 
                 if (exeedLimit(current) == 1 || *error != '\0') {
                     printf("\nFehlerhafte Eingabe. Bitte geben sie ein /main.c int int int int int. \nProgramm beendet");
@@ -124,6 +187,12 @@ int main(int argc, char **argv) {
 
         printf("Input of Program:\nr_Start: \t%d\nr_End: \t\t%d\ni_Start: \t%d\ni_End: \t\t%d\nresolution: \t%d\n", r_Start, r_End, i_Start, i_End, resolution);
 
+        printf("Parsing done");
+
+        /*
+         * Creating BMP FILE
+         */
+        createBMP("Hello", 1,1);
 
         //Endzeit des algorithmus
         time_t end;
