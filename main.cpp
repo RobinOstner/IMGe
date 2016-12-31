@@ -54,8 +54,8 @@ int invalidInput(char* input){
 
 
 void createBMP(char* image_data, int w, int h){
-    w=4;
-    h=2;
+    //w=4;
+    //h=2;
     FILE *f;
    // int filesize = 54 + 3*w*h;
 
@@ -64,8 +64,8 @@ void createBMP(char* image_data, int w, int h){
 
     unsigned char bmpfileheader[14] = {'B','M', 0,0,0,0, 0,0,0,0, 54,0,0,0};
     unsigned char bmpinfoheader[40] = {40,0,0,0, 0,0,0,0, 0,0,0,0, 1,0, 24,0};
-    unsigned char bmpcontent[9] = {255,0,0,0,255,0,0,0,255};
-    unsigned char bmppad[3] = {0,0,0};
+    unsigned char bmpcontent[3] = {255,0,0};
+    unsigned char bmppad[1] = {0};
 
     int padSize  = (4-3* w%4)%4;
     int sizeData = w*h*3 + h*padSize;
@@ -104,15 +104,34 @@ void createBMP(char* image_data, int w, int h){
         bmpcontent[2]= bmpcontent[2]*(image_data[i]-48)/9;*/
 
 
+    //jede reihe muss ein vielfaches von 4 sein, beim speichern 1 reihe in den buffer schreiben
+    //anschließend über reihe iterieren und schreiben und mit paddding auffüllen
 
-    fwrite(bmpcontent, 9, 9, f);
+    //gesamtanzahl an sample punkten = länge array
+    //xRes = width, yRes = height
 
+    // array in assemblee von oben links nach unten rechts befüllen
+    int i,j;
+    for(i=w*(h-1); i >= 0;i=i-w){
+        //i gibt startpunkt in array
 
+        //j iteriet über die Zeile
+        for(j=0;j<w;j++){
+            bmpcontent[0]=(int)(255*(image_data[i+j]-48)/(float)9);
+            bmpcontent[1]=(int)(255*(image_data[i+j]-48)/(float)9);
+            bmpcontent[2]=(int)(255*(image_data[i+j]-48)/(float)9);
+            fwrite(bmpcontent, 1, 3, f);
+        }
 
+        //insert padding
 
+        //bmppad evtl auf 1 anhängen
+        for(int x=padSize; x>0;x--){
+           fwrite(bmppad, 1, 1, f);
+        }
+    }
 
-
-
+   // fwrite(bmpcontent, 9, 9, f);
 
     fclose(f);
 }
@@ -224,7 +243,9 @@ int main(int argc, char **argv) {
         /*
          * Creating BMP FILE
          */
-        createBMP("Hello", 1920,1080);
+        char test[24] = {48,57,48,57,48,57,48,57,48,57,48,57,48,57,48,57,48,57,48,57,48,57,48,57};
+
+        createBMP(test, 6,4);
 
         //Endzeit des algorithmus
         time_t end;
