@@ -1,0 +1,65 @@
+﻿
+//resolution anzahl der bildpunkte die zu sampeln sind
+//resX Anzahl in x richtung
+//resY Anzahl in y richtung
+char[] image = new char[resolution]
+
+
+//delta ist gesamtlänge end-start
+xStride = deltaX/resolution
+yStride = deltaY/resoltuion
+
+int i,j
+for(float x=rStart; x<rEnd; x+= x_stride ){
+    for(float y=iStart; y<rEnd; y+=y_stride){
+        //real: x und imaginär ist y
+        image[i*resoltuino+j] =olifunktion(x,y);
+        j++
+    }
+    i++;
+}
+
+
+
+//pointer auf array wird auf nächste stelle inkrementeirt
+
+//laufwerte berechnen
+    //xstride
+    r9 = r2-r1;
+    r9 = r9 / r5;
+
+    //ystride
+    r8 = r4 - r3;//iEnd - iStart
+    r8 = r8 / r5;//stride berechnen
+
+
+schleifeY: //y ist imaginär
+
+    compare r6 mit r3
+    beq end
+
+       schleifeX://x ist real
+        compare r7 mit r2
+        beq xend
+
+        Werte für übergabe an oli berechnen (aktuelles x und aktuelles y)
+        r10 = berechnung oli die in ein register geschrieben wird
+
+        store register r10 an arraypointer
+        add r0,r0, 8
+
+        r7 = r7 + r9;
+        schleifeX
+
+xend:
+    //erhöhe y
+    r6 = r6 + r8; // Laufwert
+    b schleifeY
+
+
+end:
+
+
+
+
+
