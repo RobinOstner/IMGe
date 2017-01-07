@@ -56,3 +56,39 @@ Schleife (solang z>=1){
 	Add rx rx ry
 	Sub z z #1
 }
+
+
+Umsetzung in Assembler:
+//Input: int r_start, int r_end, int i_start, int i_end, int res, char *img
+//->6 Inputs
+
+//Sicherung von Stackpointer etc.
+Push[rx-ry,lr]; //Ich weiß nicht, welche genau gespeichert werden müssen...
+
+//Übergeben der Eingangswerte an Rechenregister (Umformung in float)
+//TODO
+//Initialisierung von x/y 
+//Beginn Array-loop
+	//real=0
+	VMov s0, #0;
+	//imag=0
+	VMov s1, #0
+	//Beginn Formel-loop
+		//reel^2
+		VMul s0, s0;
+		//2*reel*imag
+		VMul s2, s0, s1; 
+		VMul s2, #2; //bzw mit shiftleft?
+		//imag^2
+		VMul s1, s1;
+		Neg s1;
+		//+c
+		Add s0, a;
+		Add s2, b;
+		//Zusammenfassen
+		Add s0, s1;
+		Mov s1, s2;
+		Cmp //Hier müssen wir noch eine passende Abbruchsbedingung finden (evtl delta>wert)
+	//Ende f-loop
+	
+//Ende A-loop
