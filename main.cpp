@@ -24,6 +24,8 @@
 
 using namespace std;
 
+extern void mandelbrot(unsigned int r_start, unsigned int r_end, unsigned int i_start, unsigned int i_end, unsigned int res, unsigned char *img);
+
 int exeedLimit(int input){
     if(input<INT_MIN || input>INT_MAX){
         return 1;
@@ -53,11 +55,9 @@ int invalidInput(char* input){
 
 
 
-void createBMP(char* image_data, int w, int h){
-    //w=4;
-    //h=2;
+void createBMP(unsigned char* image_data, int w, int h){
     FILE *f;
-   // int filesize = 54 + 3*w*h;
+
 
 
 
@@ -96,14 +96,6 @@ void createBMP(char* image_data, int w, int h){
     fwrite(bmpinfoheader,1,40,f);
 
 
-       /* for(int j=0;j<3;j++){
-            bmpcontent[i]=255;
-        }
-        bmpcontent[0]= bmpcontent[0]*(image_data[i]-48)/9;
-        bmpcontent[1]= bmpcontent[1]*(image_data[i]-48)/9;
-        bmpcontent[2]= bmpcontent[2]*(image_data[i]-48)/9;*/
-
-
     //jede reihe muss ein vielfaches von 4 sein, beim speichern 1 reihe in den buffer schreiben
     //anschließend über reihe iterieren und schreiben und mit paddding auffüllen
 
@@ -131,27 +123,10 @@ void createBMP(char* image_data, int w, int h){
         }
     }
 
-   // fwrite(bmpcontent, 9, 9, f);
+
 
     fclose(f);
 }
-
-void fillArray(char* picture, long yRes, long xRes){
-
-    //Array lang laufen
-    for(int i=0;i<yRes;i++){
-        for(int j=0;j<xRes;j++){
-
-
-            //Zahl iterativ brechnen
-
-
-        }
-
-    }
-
-}
-//auflösung und bereich
 
 int main(int argc, char **argv) {
 
@@ -217,35 +192,24 @@ int main(int argc, char **argv) {
             return -1;
         }
 
-        /*
-         * Calculating Image Size
-         */
-        int deltaX = r_End - r_Start;
-        int deltaY = i_End - i_Start;
 
-        int totalPix = deltaX * deltaY;
-
-        float totalToRes = totalPix /resolution;
-
-
-        float resX = deltaX / sqrt(totalToRes);
-        float resY = deltaY / sqrt(totalToRes);
-
-        char *image = new char[resolution];
-
-        printf("Aufloesung: %d\t%d\t%d\t%lf\t%lf\t%lf\n", deltaX,deltaY,totalPix,resX,resY, resX*resY);
-
+        unsigned char* image = new unsigned char[resolution*resolution];
 
         printf("Input of Program:\nr_Start: \t%d\nr_End: \t\t%d\ni_Start: \t%d\ni_End: \t\t%d\nresolution: \t%d\n", r_Start, r_End, i_Start, i_End, resolution);
 
-        printf("Parsing done");
+        printf("Parsing done\n");
+        printf("Starting to calculate Image");
+
+        /*
+         * Filling image
+         */
+        mandelbrot(r_Start,r_End,i_Start,i_End,resolution,image);
+
 
         /*
          * Creating BMP FILE
          */
-        char test[24] = {48,57,48,57,48,57,48,57,48,57,48,57,48,57,48,57,48,57,48,57,48,57,48,57};
-
-        createBMP(test, 6,4);
+        createBMP(image, 6,4);
 
         //Endzeit des algorithmus
         time_t end;
