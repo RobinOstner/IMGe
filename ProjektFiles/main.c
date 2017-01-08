@@ -40,8 +40,8 @@
 #include <time.h>
 #include <stdlib.h>
 #include <limits.h>
-#include <cmath>
-#include <string>
+#include <math.h>
+#include <string.h>
 
 // TODO: C-Funktion implementieren
 // TODO: ASM-Funktion importieren
@@ -63,7 +63,7 @@ int exeedLimit(int input) {
 int invalidInput(char* input) {
 	//find out length
 	int length = 0;
-	while (input[length] != NULL) {
+	while (input[length] != '\0') {
 		length++;
 	}
 
@@ -222,7 +222,7 @@ int main(int argc, char **argv) {
 		}
 
 
-		unsigned char* image = new unsigned char[resolution*resolution];
+		unsigned char image[resolution*resolution]; // = new unsigned char[resolution*resolution];
 
 		printf("Input of Program:\nr_Start: \t%d\nr_End: \t\t%d\ni_Start: \t%d\ni_End: \t\t%d\nresolution: \t%d\n", r_Start, r_End, i_Start, i_End, resolution);
 
@@ -238,7 +238,7 @@ int main(int argc, char **argv) {
 		/*
 		* Creating BMP FILE
 		*/
-		createBMP(image, 6, 4);
+		createBMP(image, resolution, resolution);
 
 		//Endzeit des algorithmus
 		time_t end;
