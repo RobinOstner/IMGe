@@ -12,3 +12,4 @@ bin: main.c mandelbrot.S
 
 clean:
 	rm $(TARGET)
+	rm baked_Mandelbrot.bmp

@@ -49,7 +49,7 @@
 // TODO: Benchmark-Loop-Funktion implementieren
 
 // TODO: Test-Funktion implementieren
-using namespace std;
+//using namespace std;
 
 extern void mandelbrot(unsigned int r_start, unsigned int r_end, unsigned int i_start, unsigned int i_end, unsigned int res, unsigned char *img);
 
@@ -178,7 +178,7 @@ int main(int argc, char **argv) {
 
 			printf("parsing started\n");
 
-
+/*
 			for (int i = 1; i<6; i++) {
 
 				if (invalidInput(argv[i]) == 1) {
@@ -201,7 +201,7 @@ int main(int argc, char **argv) {
 					return -1;
 				}
 			}
-
+*/
 			r_Start = atoi(argv[1]);
 			r_End = atoi(argv[2]);
 			i_Start = atoi(argv[3]);
@@ -222,12 +222,17 @@ int main(int argc, char **argv) {
 		}
 
 
-		unsigned char image[resolution*resolution]; // = new unsigned char[resolution*resolution];
+		unsigned char image[resolution*resolution];
 
 		printf("Input of Program:\nr_Start: \t%d\nr_End: \t\t%d\ni_Start: \t%d\ni_End: \t\t%d\nresolution: \t%d\n", r_Start, r_End, i_Start, i_End, resolution);
 
 		printf("Parsing done\n");
-		printf("Starting to calculate Image");
+		printf("Starting to calculate Image\n");
+
+	/*	for(int i=0;i<resolution*resolution;i++){
+
+			image[i]=48;
+		}*/
 
 		/*
 		* Filling image with asm Method
@@ -245,7 +250,7 @@ int main(int argc, char **argv) {
 		time(&end);
 		//berechnen der Zeitdifferenz
 		start = end - start;
-		printf("Das Programm lief %d s", start);
+		printf("Das Programm lief %d s\n", start);
 
 	} else {
 		printf("Usage: %s MODE [args...]\n", argv[0]);
