@@ -37,10 +37,36 @@ schleifeY:
 	vmov s4, s2
 
 	schleifeX:
-		mov r8, #57
-		str r8, [r5]
-		add r5, r5 , #1
+		
 
+		VMOV.F32 s5, #0 ;#imag
+		VMOV.F32 s6, #0 ;#real
+		mov r9, #10
+		schleifeF:
+			;#z^2
+			VMUL.F32 s7, s5, s5		;#imag^2
+			VMUL.F32 s5, s5, s6
+			VMUL.F32 s5, s5, #2		;#imag ohne b
+			VMUL.F32 s8, s6, s6		;#real^2
+			VSUB.F32 s6, s8, s7		;#real ohne a
+			VADD.F32 s6, s6, s4		;#real
+			VADD.F32 s5, s5, s0		;#imag 
+
+			;#Überprüfung ob wert größer 5
+			VADD.F32 s9, s5, s6
+			cmp s9, #5
+			mov r8, #57
+			
+			bge schleifeabbruch
+
+			mov r8, #48
+			sub r9, r9, #1
+			cmp r9, #0
+			bge schleifeF
+
+			schleifeabbruch:
+			str r8, [r5]
+			add r5, r5 , #1
 
 		VADD.F32 s4, s3
 		add r7, r7 , #1
