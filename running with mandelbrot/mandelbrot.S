@@ -68,18 +68,16 @@ schleifeY:
 			;#Überprüfung ob wert größer 5
 			VADD.F32 s9, s5, s6
 			
-			mov r10, #1
-			VMOV s10, r10
-			VCVT.F32.U32 s10, s10
-			VCMP.F32 s9, s10
-			
-			VCVT.U32.F32 s9, s9
-			VMOV r10, s9
-			cmp r10, #2
-
-			mov r8, #57
-			
+			;#cutoff von der Menge entscheidung ob es divergiert oder konvergiert
+			VMUL.F32 s10, s9, s9
+			VCVT.U32.F32 s10, s10
+			VMOV r10, s10
+			cmp r10, #4
+			mov r8, #57			
 			bge schleifeabbruch
+
+			
+			
 						
 			mov r8, #48
 			sub r9, r9, #1
