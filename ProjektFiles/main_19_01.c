@@ -113,10 +113,9 @@ int invalidInput(char* input) {
 		if (input[i] < '0' || input[i] > '9') {
 			return 1;
 		}
-		
 	}
 
-	if (length>1 && input[0] == '0' && (input[1] > '0'  && input[1] <= '9')) {
+	if (length>1 && input[0] == '0') {
 		return 1;
 	}
 	return -1;
