@@ -134,8 +134,12 @@ int main(int argc, char **argv)
 
 	//Kommandozeilen Argumente Anzahl checken bei flascher Anzahl beenden.
 	if (argc == 6) {
-		/*starting time tracking*/
-		double time1, time2;
+		/*starting time tracking
+		 *
+		 *time1 and time2 makeup total time the program run
+		 *time3 and time4 are for the calculation
+		 */
+		double time1, time2, time3, time4;
 		time1 = secondes();
 
 		/*
@@ -168,8 +172,11 @@ int main(int argc, char **argv)
 		/*
 		* Filling image in assembler
 		*/
+		
 		printf("Starting to calculate Image\n");
+		time3 = secondes();
 		mandelbrot(r_Start, r_End, i_Start, i_End, resolution, image);
+		time4 = secondes();
 		printf("Ended to calculate Image\n");
 
 		/*
@@ -182,8 +189,9 @@ int main(int argc, char **argv)
 
 		/*ending time tracking printing time*/
 		time2 = secondes();
-		double duration = time2 - time1;
-		printf("%f\ts\n", duration);
+		double duration_all = time2 - time1;
+		printf("Die Gesamtlaufzeit betrug: %f s\n", duration_all);
+		printf("Die Berechnungszeit betrug: %f s\n", time4 - time3);
 		printf("Press any button to end\n");
 		getchar();
 	}

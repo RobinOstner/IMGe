@@ -108,7 +108,7 @@ loop:
 		VSUB.F32 q3, q3, q4 ;# real^2-ima^2
 		VADD.F32 q3, q3, q1 ;# neuer realteil + Konstant
 
-		VADD.F32 q4, q4, q5 ;# 2ab + imaginär Konstante
+		VADD.F32 q4, q4, q2 ;# 2ab + imaginär Konstante
 
 		;#konvergenzberechnung hier zu ende
 
