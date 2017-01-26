@@ -17,8 +17,7 @@ void createBMP(unsigned char* image_data, int w, int h) {
 
 	unsigned char bmpfileheader[14] = { 'B','M', 0,0,0,0, 0,0,0,0, 54,0,0,0 };
 	unsigned char bmpinfoheader[40] = { 40,0,0,0, 0,0,0,0, 0,0,0,0, 1,0, 24,0 };
-	unsigned char bmpcontent[3] = { 255,0,0 };
-	unsigned char bmppad[1] = { 0 };
+
 
 	int padSize = (4 - 3 * w % 4) % 4;
 	int sizeData = w*h * 3 + h*padSize;
@@ -47,37 +46,7 @@ void createBMP(unsigned char* image_data, int w, int h) {
 	f = fopen("baked_Mandelbrot.bmp", "wb");
 	fwrite(bmpfileheader, 1, 14, f);
 	fwrite(bmpinfoheader, 1, 40, f);
-
-
-	//jede reihe muss ein vielfaches von 4 sein, beim speichern 1 reihe in den buffer schreiben
-	//anschließend über reihe iterieren und schreiben und mit paddding auffüllen
-
-	//gesamtanzahl an sample punkten = länge array
-	//xRes = width, yRes = height
-
-	// array in assemblee von oben links nach unten rechts befüllen
-	int i, j;
-	for (i = w*(h - 1); i >= 0; i = i - w) {
-		//i gibt startpunkt in array
-
-		//j iteriet über die Zeile
-		for (j = 0; j<w; j++) {
-			bmpcontent[0] = (int)(255 * (image_data[i + j] - 48) / (float)9);
-			bmpcontent[1] = (int)(255 * (image_data[i + j] - 48) / (float)9);
-			bmpcontent[2] = (int)(255 * (image_data[i + j] - 48) / (float)9);
-			fwrite(bmpcontent, 1, 3, f);
-		}
-
-		//insert padding
-
-		//bmppad evtl auf 1 anhängen
-		for (int x = padSize; x>0; x--) {
-			fwrite(bmppad, 1, 1, f);
-		}
-	}
-
-
-
+	fwrite(image_data, w*h,3, f);
 	fclose(f);
 }
 
@@ -127,8 +96,8 @@ int main(int argc, char **argv)
 	/*
 	* Parsing commandline arguments and checking for valid input
 	* @param r_Start, r_End: Realteil start und Ende
-	* @param i_STart, i_End: Imaginärteil Start und Ende
-	* @param resolution: Auflösung des Bildes am Ende
+	* @param i_STart, i_End: Imaginï¿½rteil Start und Ende
+	* @param resolution: Auflï¿½sung des Bildes am Ende
 	*/
 	int r_Start = 0, r_End = 0, i_Start = 0, i_End = 0, resolution = 0;
 
@@ -168,11 +137,11 @@ int main(int argc, char **argv)
 		/*
 		* Starting main task
 		*/
-		unsigned char* image = malloc(sizeof(unsigned char)*resolution*resolution);
+		unsigned char* image = malloc(sizeof(unsigned char)*resolution*resolution*3);
 		/*
 		* Filling image in assembler
 		*/
-		
+
 		printf("Starting to calculate Image\n");
 		time3 = secondes();
 		mandelbrot(r_Start, r_End, i_Start, i_End, resolution, image);
