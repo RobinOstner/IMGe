@@ -1,0 +1,6 @@
+Unter Linux ist diese Latex-Vorlage mit "make" in ein PDF übersetzbar.
+"make clean" räumt auf.
+
+Verändern Sie nur die Datei Ausarbeitung.tex
+Sollten sie zusätzliche Dateien (Graphiken, etc.) verwenden, erstellen legen Sie diese im Unterordner Abbildungen ab.
+In diesem Fall sollten Sie als Abgabe auch ein ZIP oder tar.gz des gesamten Ausarbeitung-Ordners erstellen und Abgeben (bitte ohne temporäre Dateien!)

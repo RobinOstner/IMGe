@@ -14,16 +14,15 @@ extern void parallel(unsigned int r_start, unsigned int r_end, unsigned int i_st
 /*
 *Speichern eines Arrays in eine BMP-Datei
 */
-void createBMP(unsigned char* image_data, int w, int h) {
-	FILE *f;
+void createBMP(unsigned char* image_data, int res) {
+
 
 //header und infoheader nach wikipedia definition
 	unsigned char bmpfileheader[14] = { 'B','M', 0,0,0,0, 0,0,0,0, 54,0,0,0 };
 	unsigned char bmpinfoheader[40] = { 40,0,0,0, 0,0,0,0, 0,0,0,0, 1,0, 24,0 };
 
 
-	int padSize = (4 - 3 * w % 4) % 4; //wird benötigt bei ungeraden auflösungen
-	int sizeData = w*h * 3 + h*padSize;
+	int sizeData = res*res * 3;
 	int filesize = sizeData + sizeof(bmpfileheader) + sizeof(bmpinfoheader);
 
 	/* Construct header with filesize part */
@@ -32,20 +31,21 @@ void createBMP(unsigned char* image_data, int w, int h) {
 	bmpfileheader[4] = (unsigned char)(filesize >> 16);
 	bmpfileheader[5] = (unsigned char)(filesize >> 24);
 
-	bmpinfoheader[4] = (unsigned char)(w);
-	bmpinfoheader[5] = (unsigned char)(w >> 8);
-	bmpinfoheader[6] = (unsigned char)(w >> 16);
-	bmpinfoheader[7] = (unsigned char)(w >> 24);
-	bmpinfoheader[8] = (unsigned char)(h);
-	bmpinfoheader[9] = (unsigned char)(h >> 8);
-	bmpinfoheader[10] = (unsigned char)(h >> 16);
-	bmpinfoheader[11] = (unsigned char)(h >> 24);
+	bmpinfoheader[4] = (unsigned char)(res);
+	bmpinfoheader[5] = (unsigned char)(res >> 8);
+	bmpinfoheader[6] = (unsigned char)(res >> 16);
+	bmpinfoheader[7] = (unsigned char)(res >> 24);
+	bmpinfoheader[8] = (unsigned char)(res);
+	bmpinfoheader[9] = (unsigned char)(res >> 8);
+	bmpinfoheader[10] = (unsigned char)(res >> 16);
+	bmpinfoheader[11] = (unsigned char)(res >> 24);
 
 	bmpfileheader[20] = (unsigned char)(sizeData);
 	bmpfileheader[21] = (unsigned char)(sizeData >> 8);
 	bmpfileheader[22] = (unsigned char)(sizeData >> 16);
 	bmpfileheader[23] = (unsigned char)(sizeData >> 24);
 
+FILE *f;
 //tatsächliches öffnen des files
 	f = fopen("baked_Mandelbrot.bmp", "wb");
 
@@ -54,7 +54,7 @@ void createBMP(unsigned char* image_data, int w, int h) {
 	fwrite(bmpinfoheader, 1, 40, f);
 
 //schreiben des Bildes
-	fwrite(image_data, w*h,3, f);
+	fwrite(image_data, res*res,3, f);
 	fclose(f);
 }
 
@@ -91,23 +91,23 @@ int invalidInput(char* input) {
 
 int main(int argc, char **argv)
 {
-
-	/*
-	* Parsing commandline arguments and checking for valid input
-	* @param r_Start, r_End: Realteil start und Ende
-	* @param i_STart, i_End: Imagin�rteil Start und Ende
-	* @param resolution: Aufl�sung des Bildes am Ende
-	*/
-	int r_Start = 0, r_End = 0, i_Start = 0, i_End = 0, resolution = 0;
-
 	//Kommandozeilen Argumente Anzahl checken bei flascher Anzahl beenden.
 	if (argc == 6) {
+
+		/*
+		* Parsing commandline arguments and checking for valid input
+		* @param r_Start, r_End: Realteil start und Ende
+		* @param i_STart, i_End: Imagin�rteil Start und Ende
+		* @param resolution: Aufl�sung des Bildes am Ende
+		*/
+		int r_Start = 0, r_End = 0, i_Start = 0, i_End = 0, resolution = 0;
+
 		/*starting time tracking
 		 *
 		 *time1 and time2 makeup total time the program run
 		 *time3 and time4 are only for the calculation
 		 */
-		double time1, time2, time3, time4;
+		double time1, time2, time3, time4 , time5, time6;
 		time1 = secondes();
 
 		/*
@@ -154,20 +154,17 @@ int main(int argc, char **argv)
 
 		printf("Parsing done\n");
 
-		printf("Wolle sie die parallele oder single Version ausfürhen:\n Für parallel bitte 0 eingeben für Single bitte 1\n");
+		printf("Wollen sie die parallele oder single Version ausfürhen:\n Für parallel bitte 0 eingeben für Single bitte 1\n");
 
+		time5 = secondes();
 		char choice;
 		choice = getchar();
-		printf("%d\n", choice);
 
 		if((int) choice != 48 && (int)choice != 49){
 			printf("Fehlerhafte Eingabe. Programm bitte neu starten\n");
 			return -1;
 		}
-	/*	while(choice != 'a' || choice != 'b' ){
-			printf("Keine 0 oder 1\n");
-			scanf("%cs", choice);
-		}*/
+		time6 = secondes();
 
 		/*
 		* Starting main task
@@ -196,13 +193,14 @@ int main(int argc, char **argv)
 		* creating the bmp file
 		*/
 		printf("Starting to write Data to File\n");
-		createBMP(image, resolution, resolution);
+		createBMP(image, resolution);
 		free(image);
 		printf("Ended to write Data to File\n");
 
 		/*ending time tracking printing time*/
+		/*die zeit die für die eingabe gebraucht wird nicht mitberechnen*/
 		time2 = secondes();
-		double duration_all = time2 - time1;
+		double duration_all = time2 - time1 - (time6 - time5);
 		printf("Die Gesamtlaufzeit betrug: %f s\n", duration_all);
 	}
 	return 0;

@@ -1,0 +1,12 @@
+\BOOKMARK [1][-]{section.1}{Problemstellung und Spezifikation}{}% 1
+\BOOKMARK [1][-]{section.2}{L\366sungsalternativen}{}% 2
+\BOOKMARK [1][-]{section.3}{Dokumentation der Implementierung}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{Implementierung des C-Programms}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{Implementierung Single-Pixel-Calculation}{section.3}% 5
+\BOOKMARK [2][-]{subsection.3.3}{Implementierung Mult-Pixel-Calculation}{section.3}% 6
+\BOOKMARK [3][-]{subsubsection.3.3.1}{Konzept}{subsection.3.3}% 7
+\BOOKMARK [3][-]{subsubsection.3.3.2}{Konkrete Umsetzung}{subsection.3.3}% 8
+\BOOKMARK [2][-]{subsection.3.4}{Anwendung des Programmes}{section.3}% 9
+\BOOKMARK [1][-]{section.4}{Ergebnisse / Fazit}{}% 10
+\BOOKMARK [2][-]{subsection.4.1}{Ergebnisse und Optimierung}{section.4}% 11
+\BOOKMARK [2][-]{subsection.4.2}{Fazit}{section.4}% 12
