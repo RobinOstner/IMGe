@@ -35,7 +35,38 @@
 \section{Problemstellung und Spezifikation}
 
 \pagebreak
-\section{Lösungsalternativen}
+\section{Lösungsfindung}
+Nachdem bekannt gegeben wurde welche Aufgabe unser Team bekommt hat sich zunächst jeder für sich mit der Mandelbrotmenga an sich beschäftigt.
+Das hat uns in sofern geholfen, dass als wir uns zur ersten Besprechung getroffen haben jeder schon eine Ahnung davon hatte was überhaupt zu tun ist.
+Für uns alle war von vornherein die beste Möglichkeit an das Problem heranzugehen, zuerst das C-Programm mit Input und Output zu schreiben und uns dann an den Assembler-Teil setzen.
+
+Dieser Assembler-Teil sollte zunächst nur eine sehr simple Version sein, um einen Überblick zu bekommen, welche Probleme wir bei der tatsächlichen Implementierung zu beachten haben.
+Es stand somit fest, dass wir zwei verschiedene Versionen der Mandelbrotfunktion implementieren werden.
+Auf diese Weise hatten wir von vornherein ein Programm was funktioniert ohne, dass wir Stubs oder Ähnliches benutzen müssen.
+Wir hatten also ein Programm, was uns ein Bild mit bestimmten Maßen und korrekten Bildpunkten ausgibt.
+Jedoch hatte das Bild noch nichts mit der Mandelbrotmenge zu tun, da wir diesen Teil nicht in dem C-Programm umgesetzt haben, was im Nachhinein in manchen Situationen recht hilfreich gewesen wäre.
+Deshalb haben wir uns danach um den Assembler-Teil gekümmert.
+
+Das Ziel war also das Array komplett unbeschrieben an die Assembler-Funktion zu übergeben und es dort dann korrekt zu befüllen und abzuspeichern.
+Damit stellten wir sicher, dass wir später, wenn der Code komplexer wird, dieses Problem ausschließen können.
+Da wir das Array zu diesem Zeitpunkt einfach nur von Bildpunkt zu Bildpunkt durchgelaufen sind, war es klar, dass wir nur noch den richtigen Farbwert an der Stelle ausrechnen müssten und es würde ein korrektes Bild ergeben.
+
+Somit war der nächste Schritt sich konkret mit der Berechnung der Mandelbrotmenge zubeschäftigen und uns dazu eine Art Pseudo-Assembler-Code zuerstellen.
+Dieser Pseudo-Code musste letztendlich nur noch angepasst und an der richtigen Stelle eingefügt werden.
+Da wir nun einen funktionierenden Code hatten, der uns die Mandelbrotmenge richtig in einem Bild abspeichert, haben wir uns überlegt wie wir das Grundgerüst so umschreiben können, dass es parallel mehrere Pixel gleichzeitig berechnet.
+
+Zunächst war die Idee ein float-Array zu initialisieren und dieses vorerst nur mit den Positionswerten für die einzelnen Berechnungen beschreibt.
+Diese werden dann mit einem Structure-Load in die Q-Register geladen und dort parallel verarbeitet.
+
+Da aber die korrekte Erstellung eines float-Arrays zu aufwändig ist und wir uns nicht sicher waren, ob wir es auch tatsächlich auf diese Weise zum Laufen bringen,
+haben wir uns letzten Endes doch für die zweite Option entschieden.
+Diese ist vermutlich die schnellste Art die Mandelbrotmenge parallel zu berechnen und war für uns alle gut zu verstehen.
+Die Idee dahinter ist, dass man kontinuierlich 4 Pixel gleichzeitig berechnet und wenn einer von diesen rausfällt, weil er fertig berechnet ist, wird er sofort durch einen anderen Pixel ersetzt.
+Somit muss das System nicht darauf warten, dass alle 4 Pixel fertig sind, aber die Implementierung wird im weiteren Verlauf noch genauer ausgearbeitet.
+Mit dem gesammelten Wissen aus der simplen Single-Pixel Berechnung war die Implementierung dieser Version auch nicht mehr allzu kompliziert.
+Nach ein paar Fehlerausbesserungen funktionierte nun also auch die zweite Version.
+
+
 
 \pagebreak
 \section{Dokumentation der Implementierung}
@@ -83,7 +114,59 @@ Bevor wir das Programm verlassen, wird die Gesamtlaufzeit noch berechnet und ebe
 
 \subsection{Implementierung Single-Pixel-Calculation}
 
-\pagebreak
+\subsubsection{Konzept}
+
+Die Idee hinter der Single-Pixel-Implementierung ist sehr unkompliziert und daher auch um einiges einfacher umzusetzen.
+Es werden lediglich zwei Schleifen durchlaufen, welche jeweils die X-Achse bzw. die Y-Achse ablaufen. Wir berechnen also jeden Bildpunkt der zu berechnen und auszuwerten ist einzeln, daher auch der Name für die Funktion.
+Das heißt, dass wir für den aktuell zu berechnenden Pixel sehr einfach an die Grundwerte für die Berechnung kommen, da wir bei jedem Schleifendurchlauf lediglich die X und Y Position durch eine Addition aktualisieren müssen.
+Der X-Wert wird jedoch nach jedem vollständigen durchlaufen der X-Schleife auf seinen Grundwert zurückgesetzt.
+Dieser Ablauf wird so lang ausgeführt bis die Y-Schleife einmal komplett durchlaufen wurde.
+
+\subsubsection{Konkrete Umsetzung}
+Zu Beginn werden die Register r4 bis r10, so wie das Link-Register auf dem Stack gesichert, damit, nachdem die Funktion wieder verlassen wurde, alles wieder dort ist wo es sein muss.
+Bevor die eigentliche Arbeit anfangen kann benötigen wir lediglich die restlichen beiden Übergabewerte, welche nicht automatisch mit übergeben werden.
+Diese bekommen wir mithilfe von zwei Loads und dem Stackpointer.
+Nun haben wir alle benötigten Werte und beginnen damit die Schrittgröße in Y-Richtung zu berechnen.
+Da die Schrittgröße jedoch meist nicht als eine Ganze Zahl dargestellt werden kann, sondern oft nur als Gleitkommazahl, müssen wir hierfür die s-Register benutzen.
+Wir verschieben r3 nach s0 und berechnen mit einer simplen Subtraktion von r3 und r2 die Differenz zwischen iEnd und iStart, welche wir in r9 abspeichern.
+Nun wird r9 nach s1 und r4 nach s4 verschoben. Die Werte dieser drei Register werden jetzt in ein 32-Bit float konvertiert.
+So beinhaltet s0 jetzt iStart, s1 die Differenz, und s4 die im C-Teil spezifizierte Resolution.
+Die Schrittgröße berechnet sich nun aus der Division der Differenz und der Resolution.
+Jedoch ist für die richtige Berechnung eine kleine Anpassung an der Resolution vorzunehmen.
+Wenn man von einer Resolution von 4 ausgeht sind es lediglich 3 Schritte die noch zu machen sind.
+Das heißt wir müssen zunächst in r9 eine 1 abspeichern, r9 nach s5 kopieren, s5 in ein float konvertieren und s5 von s4 abziehen.
+Nun muss lediglich die Division von s1 durch s4 durchgeführt werden und die Schrittgröße wird wiederum in s1 abgespeichert.
+Für die Schrittgröße in X-Richtung wird das Selbe durchgeführt, mit dem einzigen Unterschied, dass die Resolution nicht mehr vorbereitet werden muss.
+
+Die Vorbereitung ist getan, also kommt es jetzt direkt zu den Schleifen.
+Wir beginnen damit einen Counter für die Y-Schleife mit dem Wert 0 zu initialisieren und setzen ein Label, um später wieder zu diesem Punkt zurückspringen zu können.
+Das selbe machen wir für die X-Schleife, jedoch muss zuvor der Wert in s4, was in Zukunft die aktuelle X-Position speichert, auf den X-Startwert aus s2 zurückgesetzt werden.
+
+Es folgt die eigentliche Berechnung des Bildpunktes, welche mit dem initialisieren der beiden Register s5 und s6 mit 0 beginnt, da man immer vom Punkt (0/0) startet.
+s5 stellt den Imaginärteil dar und s6 den Realteil.
+In r9 wird die maximale Anzahl an Durchläufen gespeichert und auf 20 gesetzt.
+Ein letztes Label für die Berechnungs-Schleife. Nun wird s5 quadriert und in s7 abgespeichert, da wir diesen Wert einzeln benötigen.
+Eine weitere Multiplikation von s5 und s6 welche anschließend verdoppelt wird und in s5 gespeichert wird.
+Der Realteil wird auch quadriert, was durch eine Multiplikation von s6 mit sich selbst durchgeführt wird und in s8 abgespeichert wird.
+Nun ziehen wir die beiden Quadrate von einander ab, also s8-s7 und speichern das Ergebnis in s6.
+Für den nächsten Schleifendurchlauf müssen der Imaginär und Realteil noch mit den jeweiligen Konstanten, also den aktuellen Positionswerten addiert werden.
+Anschließend wollen wir wissen, ob die Summe aus den beiden neuen Werten, welche sich in s5 und s6 befinden, eine bestimmte Grenze überschritten haben.
+Dafür quadrieren wir die Summe um leichter Negative Zahlen behandeln zu können und vergleichen das Ergebnis mit 4.
+Nun wird der Farbwert, welcher sich in r8 befindet, grundsätzlich auf 57 gesetzt, was einem weissen Pixel entspricht.
+Daraufhin springen wir je nachdem, ob bei dem vorherigen Vergleich das Ergebnis größergleich 4 war, zum Schleifenabbruch, was ein Label am Ende der Berechnungsschleife ist.
+Damit überspringen wir den Teil der also nur durchlaufen wird, wenn das Ergbnis kleiner 4 war. Dort wird nämlich der Farbwert auf 48, also Schwarz, gesetzt.
+Zudem wird der Schleifencounter in r9 um 1 verringert und wir springen zurück an den Schleifen Anfang der Berechnung, falls der Counter noch nicht kleiner als 0 geworden ist.
+Wenn der Counter jedoch kleiner 0 ist landen wir bei dem Label für den Schleifenabbruch, welcher zuvor erwähnt wurde.
+Dort wird lediglich der Farbwert in das Array, auf das der Pointer in r5 zeigt, abgespeichert und der Pointer anschließend um 1 erhöht.
+
+Somit ist die Berechnung für den Bildpunkt fertig und es kommt zum Schleifenende der X-Schleife.
+Dort wird die X-Position um die zugehörige Schrittgröße erhöht, der Schleifencounter wird ebenfalls um 1 erhöht und anschließend mit der Resolution verglichen.
+Falls der Wert noch kleiner ist als die Resolution branchen wir zurück zum X-Schleifenanfang.
+Wenn nicht wird das selbe für die Y-Schleife ausgeführt.
+
+Wenn wir hier wieder aus der Schleife rausfallen haben wir im Prinzip das Ende der Funktion erreicht.
+Es muss lediglich der Stack wiederhergestellt und zum Link in das C-Programm zurückgebrancht werden.
+
 \subsection{Implementierung Mult-Pixel-Calculation}
 
 
