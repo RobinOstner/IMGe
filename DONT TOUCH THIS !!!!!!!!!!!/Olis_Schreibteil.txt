@@ -1,0 +1,54 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{here} 
+
+\begin{document}
+
+\section{Problemstellung und Spezifikation}
+In diesem Projekt haben wir uns mit der Mandelbrotmenge beschäftigt. 
+Die Aufgabe war es einen Algorithmus zur Berechnung dieser Menge innerhalb eines, über Eingabeparameter definierten, Abschnitts der komplexen Ebene zu implementieren. Dabei durften Eingabe- und Ausgabeoperationen wie die Eingabeüberprüfung und die letztendliche Abspeicherung der Berechnungsergebnisse als BMP-Bilddatei in der Sprache C durchgeführt werden. Der Rest der Implementierung sollte in der Sprache Assembler umgesetzt werden.
+Zudem sollte ein paralleler Algorithmus entworfen werden, welcher die SIMD-Einheit des BeagleBoards nutzt.\\
+Um die weiteren Teilaufgaben verständlich darzustellen, folgen an dieser Stelle ein paar Informationen darüber was die Mandelbrotmenge eigentlich ist und wie man sie berechnen kann.\\
+\\
+Die Mandelbrotmenge ist eine Menge von Zahlen in der komplexen Ebene, die sich die Eigenschaft teilen, dass für sie die, durch die Gleichung $z_{i+1}={z_i}^2+c$\\ mit $z_0=0$, rekursiv definierte Folge für eine große Anzahl von Iterationen beschränkt ist.
+Dabei benennt c in der Gleichung eine komplexe Zahl, deren Realteil und Imaginärteil über die Koordinaten des dazugehörigen Pixels des auszugebenden Bildes bestimmt wird. Diese lassen sich wiederum aus den Eingabeparametern errechnen. Diese sind $r_{start}, r_{end}, i_{start}$ und $i_{end}$, welche die Grenzen des Ausschnitts der komplexen Ebene angeben, res, welcher die Auflösung des Bildes angibt und einen Zeiger auf einen Speicherbereich, in den die Ergebnisse gespeichert werden können.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.2]{MandelbrotMitAchsen.png}
+\caption{Ausschnitt des Mandelbrotes in der komplexen Zahlenebene}
+\label{fig:Mandelbrot}
+\end{figure}
+
+Um den Algorithmus umsetzen zu können, sollten wir uns vorher mithilfe dieser Informationen überlegen, wie Realteil und Imaginärteil von $z_{i+1}$ aus dem Real- sowie Imaginärteil von $z_i$ hervorgehen und diese Informationen danach als Iterationsvorschrift für unseren Algorithmus verwenden.
+Je nachdem ob die Folge an einen Pixel beschränkt ist oder nicht, sollten wir den Pixel im Ausgabebild schwarz oder nicht schwarz färben.
+Wie die Pixel, deren zugehörige komplexe Zahl nicht zur Mandelbrotmenge gehört, gefärbt werden blieb dabei uns überlassen. \\
+Diese Aufgabenstellung spezifizierten wir noch an zwei Stellen.
+Dazu zählt, dass wir als Auflösung für das auszugebende Bild nur Vielfache von Vier, welche größer als Vier sind, akzeptieren.
+Außerdem haben wir noch festgelegt, dass all jene Pixel, deren zugeordnete komplexe Zahl nicht zur Mandelbrotmenge gehört, in einem blauen Farbton gefärbt werden, welcher von der Anzahl der auf ihnen durchgeführten Formeliterationen abhängt, die nötig waren, um festzustellen, dass sie nicht zur Mandelbrotmenge gehören.
+
+
+
+
+\section{Zusammenfassung des Projektes}
+Im Laufe des Projektes haben wir Schritt für Schritt einen funktionierenden Algorithmus entworfen und implementiert, der zur Berechnung der Mandelbrotmenge  genutzt werden kann.
+Ausgehend von einer prototypischen Implementierung in Pseudocode entwickelten wir zunächst einen funktionierenden Algorithmus in Assembler, welcher noch eine schlechte Performanz aufwies.
+Diesen Algorithmus optimierten wir im darauffolgenden Schritt unter den Gesichtspunkten Laufzeit und Speichernutzung. 
+Nach dem Vorbild dieser optimierten Version begannen wir im nächsten Schritt eine parallelisierte Berechnung durch Verwendung von NEON/SIMD-Befehlen zu entwerfen.
+Dabei entstanden zwei verschiedene Ansätze, die sich in den Punkten „Einfachheit der Umsetzung“ und „Laufzeit“ deutlich unterschieden.
+Letztendlich entschieden wir uns gegen den Ansatz, in dem eine blockweise Parallelberechnung der Pixel vorgesehen war, und für den Ansatz, in welchem die Berechnung für mehrere Pixel gleichzeitig aber nicht blockweise abläuft.
+Dadurch werden bereits fertig berechnete Pixel durch den nächsten unberechneten Pixel ersetzt.
+Diese Variante haben wir effektiv umgesetzt.
+Zum Schluss haben wir unsere Implementierung noch so abgeändert, dass nicht nur ausgegeben wird, ob an einem Pixel die dazugehörige komplexe Zahl zur Mandelbrotmenge gehört, sondern auch ab welcher Anzahl an Iterationen erkannt wurde, dass sie nicht dazu gehört.
+
+\section{Wichtig!}
+//Den nachfolgenden Teil würde ich weglassen… Einerseits wurde er schon woanders geschrieben und andererseits gibt es aus meiner Sicht nur einen Punkt, den man als Verbesserung bei der Arbeit als Team anführen könnte
+Möglichkeiten zur Verbesserung:
+Der Assemblercode ist teils redundant und könnte übersichtlicher gestaltet werden.
+
+
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}
