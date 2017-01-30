@@ -1,93 +1,19 @@
-/**
- *
- * ASP Rahmenprogramm
- *
- *
- * 1. Dateiname anpassen
- *   - default.c z.B. in main.c umbenennen
- *       Im Makefile Dateinamen ersetzen nicht vergessen!
- *   - nop.S z.B. in gauss.S umbennen
- *       Im Makefile Dateinamen ersetzen nicht vergessen!
- *   - Um sicherzugehen, dass Ihr Programm kompiliert, tippen Sie in der
- *     Kommandozeile `make`.
- *
- *
- * 2. Rahmenprogramm implementieren
- *   - Siehe Blatt 4, H1
- *
- * 3. Projekt implementieren 
- *   - Implementieren Sie als Platzhalter fuer die
- *     Projektimplementierung den Gauss-Schleifen-Algorithmus oder einen
- *     anderen der behandelten Summationalgorithmen mit Uebergabe der Parameter
- *     auf der Kommandozeile:
- *       1. Implementieren Sie den Algorithmus in C in dieser Datei in
- *          einer Funktion "int gauss_c(int n)" 
- *       2. Implementieren Sie den Algorithmus in
- *          Assembler in Ihrer Assembler-Datei in einer Funktion "_gauss_asm"
- *
- *   - Kommentieren Sie Ihre Implementation, insbesondere den Assembler-Teil!
- *   - Testen Sie Ihre Implementation. Vergleichen Sie dabei die Ergebnisse der
- *     Algorithmus in C, in Assembler, und vorberechnete Referenzwerte!
- *   - Benchmarken Sie die C-Version gegen die Assembler-Version indem Sie den
- *     "time" oder "perf stat -e cycles" Befehl benutzen.
- *   - Die "Usage"-Ausgabe die in der main-Funktion implementiert ist soll
- *     Ihnen als Anregung fuer die Implementierung der verschiedenen
- *     Ausfuehrungsmodi fuer Test und Benchmarking in einem Programm dienen.
- *
-**/
-
 #include <stdio.h>
-#include <time.h>
 #include <stdlib.h>
-#include <limits.h>
-#include <math.h>
 #include <string.h>
 
-// TODO: C-Funktion implementieren
-// TODO: ASM-Funktion importieren
-
-// TODO: Benchmark-Loop-Funktion implementieren
-
-// TODO: Test-Funktion implementieren
-//using namespace std;
+#ifdef _MSC_VER
+//windows
+#include <Windows.h>
+#else
+//Linux
+#include <time.h>
+#endif
 
 extern void mandelbrot(unsigned int r_start, unsigned int r_end, unsigned int i_start, unsigned int i_end, unsigned int res, unsigned char *img);
 
-int exeedLimit(int input) {
-	if (input<INT_MIN || input>INT_MAX) {
-		return 1;
-	}
-	return -1;
-}
-
-int invalidInput(char* input) {
-	//find out length
-	int length = 0;
-	while (input[length] != '\0') {
-		length++;
-	}
-
-	//check for invalid character
-	for (int i = 0; i<length; i++) {
-		if (input[i] < '0' || input[i] > '9') {
-			return 1;
-		}
-	}
-
-	if (input[0] == 0 && (input[1] > '0'  && input[1] <= '9')) {
-		return 1;
-	}
-	return -1;
-}
-
-
-
 void createBMP(unsigned char* image_data, int w, int h) {
 	FILE *f;
-
-
-
-
 
 	unsigned char bmpfileheader[14] = { 'B','M', 0,0,0,0, 0,0,0,0, 54,0,0,0 };
 	unsigned char bmpinfoheader[40] = { 40,0,0,0, 0,0,0,0, 0,0,0,0, 1,0, 24,0 };
@@ -155,113 +81,111 @@ void createBMP(unsigned char* image_data, int w, int h) {
 	fclose(f);
 }
 
-int main(int argc, char **argv) {
-	
-	//TODO: Commandline-Parameter parsen
-	if (argc >0) {
-		//zeitmessung beginn bei erfolgreichen ausführen des Programmes
-		//Startzeipunkt setzen
-		time_t start;
-		time(&start);
+//returns a timestamp with sub seconde precision
+double secondes()
+{
+#ifdef _MSC_VER
+	static LARGE_INTEGER frequency;
+	if (frequency.QuadPart == 0)
+		QueryPerformanceFrequency(&frequency);
 
+	LARGE_INTEGER now;
+	QueryPerformanceCounter(&now);
+	return (now.QuadPart / (double)frequency.QuadPart);
+#else
+	struct timespec now;
+	clock_gettime(CLOCK_MONOTONIC, &now);
+	return now.tv_sec + now.tv_nsec / 1000000000.0;
+#endif
+}
+
+//checked den String auf fehlerhafte eingaben buchstaben oder zeichen nicht zwischen 0 und 9
+int invalidInput(char* input) {
+	//find out length
+	int length = 0;
+	while (input[length] != '\0') {
+		length++;
+	}
+
+
+	//check for invalid character
+	for (int i = 0; i<length; i++) {
+		if ((input[i] < '0' || input[i] > '9') && input[i] != '-') {
+			return 1;
+		}
+	}
+
+	if (length>1 && input[0] == '0') {
+		return 1;
+	}
+	return -1;
+}
+
+int main(int argc, char **argv)
+{
+
+	/*
+	* Parsing commandline arguments and checking for valid input
+	* @param r_Start, r_End: Realteil start und Ende
+	* @param i_STart, i_End: Imaginärteil Start und Ende
+	* @param resolution: Auflösung des Bildes am Ende
+	*/
+	int r_Start = 0, r_End = 0, i_Start = 0, i_End = 0, resolution = 0;
+
+	//Kommandozeilen Argumente Anzahl checken bei flascher Anzahl beenden.
+	if (argc == 6) {
+		/*starting time tracking*/
+		double time1, time2;
+		time1 = secondes();
 
 		/*
-		* Parsing commandline arguments and checking for valid input
-		* @param r_Start, r_End: Realteil start und Ende
-		* @param i_STart, i_End: Imaginärteil Start und Ende
-		* @param resolution: Auflösung des Bildes am Ende
+		* Parsing command line arguments
 		*/
-		int r_Start, r_End, i_Start, i_End, resolution;
+		printf("parsing started\n");
 
-		//Kommandozeilen Argumente Anzahl checken bei flascher Anzahl beenden.
-		if (argc == 6) {
+		for (int i = 1; i<6; i++) {
 
-			printf("parsing started\n");
-
-/*
-			for (int i = 1; i<6; i++) {
-
-				if (invalidInput(argv[i]) == 1) {
-					printf("\nFehlerhafte Eingabe. Bitte geben sie ein /main.c int int int int int. \nProgramm beendet \nErste Stelle");
-					return -1;
-				}
-			}
-
-			for (int i = 1; i<6; i++) {
-
-				char *error = NULL;
-				long current;
-
-				if (atoi(argv[i]) != 0) {
-					current = strtol(argv[1], &error, 10);
-				}
-
-				if (exeedLimit(current) == 1 || *error != '\0') {
-					printf("\nFehlerhafte Eingabe. Bitte geben sie ein /main.c int int int int int. \nProgramm beendet");
-					return -1;
-				}
-			}
-*/
-			r_Start = atoi(argv[1]);
-			r_End = atoi(argv[2]);
-			i_Start = atoi(argv[3]);
-			i_End = atoi(argv[4]);
-			resolution = atoi(argv[5]);
-
-
-			//Wenn res kleiner gleich 0 ist
-			if (resolution <= 0) {
-				printf("\nFehlerhafte Eingabe: Bild sollte hoehere Aufloesung als <=0 haben. Programm beendet");
+			if (invalidInput(argv[i]) == 1) {
+				printf("\nFehlerhafte Eingabe. Bitte geben sie ein /main.c int int int int int. \nProgramm beendet \nErste Stelle");
 				return -1;
 			}
-
-		}
-		else {
-			printf("\nFehlerhafter Programmaufruf Programm beendet");
-			return -1;
 		}
 
-
-		unsigned char image[resolution*resolution];
+		r_Start = atoi(argv[1]);
+		r_End = atoi(argv[2]);
+		i_Start = atoi(argv[3]);
+		i_End = atoi(argv[4]);
+		resolution = atoi(argv[5]);
 
 		printf("Input of Program:\nr_Start: \t%d\nr_End: \t\t%d\ni_Start: \t%d\ni_End: \t\t%d\nresolution: \t%d\n", r_Start, r_End, i_Start, i_End, resolution);
 
 		printf("Parsing done\n");
+
+		/*
+		* Starting main task
+		*/
+		unsigned char* image = malloc(sizeof(unsigned char)*resolution*resolution);
+		/*
+		* Filling image in assembler
+		*/
 		printf("Starting to calculate Image\n");
-
-	/*	for(int i=0;i<resolution*resolution;i++){
-
-			image[i]=48;
-		}*/
-
-		/*
-		* Filling image with asm Method
-		*/
 		mandelbrot(r_Start, r_End, i_Start, i_End, resolution, image);
-
+		printf("Ended to calculate Image\n");
 
 		/*
-		* Creating BMP FILE
+		* creating the bmp file
 		*/
+		printf("Starting to write Data to File\n");
 		createBMP(image, resolution, resolution);
+		free(image);
+		printf("Ended to write Data to File\n");
 
-		//Endzeit des algorithmus
-		time_t end;
-		time(&end);
-		//berechnen der Zeitdifferenz
-		start = end - start;
-		printf("Das Programm lief %d s\n", start);
-
-	} else {
-		printf("Usage: %s MODE [args...]\n", argv[0]);
-		printf("\t %s eval N              Auswertung des Algorithmus mit Parameter N\n", argv[0]);
-		printf("\t %s test                Testlauf zur Ueberpruefung der Korrektheit\n", argv[0]);
-		printf("\t %s loop_a N RUNS       ASM-Implementation mit Parameter N und RUNS Durchlaeufen ausfuehren\n", argv[0]);
-		printf("\t %s loop_c N RUNS       C-Implementation mit Parameter N und RUNS Durchlaeufen ausfuehren\n", argv[0]);
-		printf("\t %s loop_e N RUNS       Ausfuehrung von RUNS leeren Schleifendurchlaeufen (N wird ignoriert)\n", argv[0]);
+		/*ending time tracking printing time*/
+		time2 = secondes();
+		double duration = time2 - time1;
+		printf("%f\ts\n", duration);
+		printf("Press any button to end\n");
+		getchar();
 	}
-
-	printf("\n");
-
 	return 0;
 }
