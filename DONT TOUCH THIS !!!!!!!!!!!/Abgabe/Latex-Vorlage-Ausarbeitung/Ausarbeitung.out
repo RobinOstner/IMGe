@@ -1,5 +1,5 @@
-\BOOKMARK [1][-]{section.1}{Problemstellung und Spezifikation}{}% 1
-\BOOKMARK [1][-]{section.2}{Zusammenfassung des Projektes}{}% 2
+\BOOKMARK [1][-]{section.1}{Einleitung}{}% 1
+\BOOKMARK [1][-]{section.2}{Problemstellung und Spezifikation}{}% 2
 \BOOKMARK [1][-]{section.3}{L\366sungsfindung}{}% 3
 \BOOKMARK [1][-]{section.4}{Dokumentation der Implementierung}{}% 4
 \BOOKMARK [2][-]{subsection.4.1}{Implementierung des C-Programms}{section.4}% 5
@@ -12,4 +12,4 @@
 \BOOKMARK [2][-]{subsection.4.4}{Anwendung des Programmes}{section.4}% 12
 \BOOKMARK [1][-]{section.5}{Ergebnisse / Fazit}{}% 13
 \BOOKMARK [2][-]{subsection.5.1}{Ergebnisse und Optimierung}{section.5}% 14
-\BOOKMARK [2][-]{subsection.5.2}{Fazit}{section.5}% 15
+\BOOKMARK [1][-]{section.6}{Zusammenfassung des Projektes}{}% 15

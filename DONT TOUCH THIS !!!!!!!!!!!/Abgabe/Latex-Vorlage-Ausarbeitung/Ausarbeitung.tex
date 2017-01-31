@@ -32,6 +32,14 @@
 
 
 \pagebreak
+\section{Einleitung}
+Ein gesamtes Projekt von grundauf neu zu schreiben, welches auf den einzelnen Registern eines Prozessors arbeitet war vor dem ASP-Praktikum undenkbar.
+Dort wurden uns die Wege gezeigt um normalen Code oder Ideen intelligent und effizient in Assembler-Code umzusetzen.
+Als Grundlage dafür wurden uns die Raspberry-Pi Rechner zur Verfügung gestellt.
+Diese halfen dabei das Erlernte durch eigenständiges Ausprobieren zu verstehen und anwenden zu können.
+Außerdem wurden die Rechner später im Laufe dieses Projekt für viele Tests genutzt, um sicher zu gehen, dass das Geschriebene auch wirklich so funktioniert wie es soll.
+Wir waren somit im Besitz aller Werkzeuge, die für dieses Projekt nötig waren.
+
 \section{Problemstellung und Spezifikation}
 In diesem Projekt haben wir uns mit der Mandelbrotmenge beschäftigt.
 Die Aufgabe war es einen Algorithmus zur Berechnung dieser Menge innerhalb eines, über Eingabeparameter definierten, Abschnitts der komplexen Ebene zu implementieren. Dabei durften Eingabe- und Ausgabeoperationen wie die Eingabeüberprüfung und die letztendliche Abspeicherung der Berechnungsergebnisse als BMP-Bilddatei in der Sprache C durchgeführt werden. Der Rest der Implementierung sollte in der Sprache Assembler umgesetzt werden.
@@ -43,7 +51,7 @@ Dabei benennt c in der Gleichung eine komplexe Zahl, deren Realteil und Imaginä
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[scale=0.2]{pictures/MandelbrotMitAchsen.png}
+\includegraphics[scale=0.225]{pictures/MandelbrotMitAchsen.png}
 \caption{Ausschnitt des Mandelbrotes in der komplexen Zahlenebene}
 \label{fig:Mandelbrot}
 \end{figure}
@@ -55,19 +63,9 @@ Diese Aufgabenstellung spezifizierten wir noch an zwei Stellen.
 Dazu zählt, dass wir als Auflösung für das auszugebende Bild nur Vielfache von Vier, welche größer als Vier sind, akzeptieren.
 Außerdem haben wir noch festgelegt, dass all jene Pixel, deren zugeordnete komplexe Zahl nicht zur Mandelbrotmenge gehört, in einem blauen Farbton gefärbt werden, welcher von der Anzahl der auf ihnen durchgeführten Formeliterationen abhängt, die nötig waren, um festzustellen, dass sie nicht zur Mandelbrotmenge gehören.
 
-\section{Zusammenfassung des Projektes}
-Im Laufe des Projektes haben wir Schritt für Schritt einen funktionierenden Algorithmus entworfen und implementiert, der zur Berechnung der Mandelbrotmenge  genutzt werden kann.
-Ausgehend von einer prototypischen Implementierung in Pseudocode entwickelten wir zunächst einen funktionierenden Algorithmus in Assembler, welcher noch eine schlechte Performanz aufwies.
-Diesen Algorithmus optimierten wir im darauffolgenden Schritt unter den Gesichtspunkten Laufzeit und Speichernutzung.
-Nach dem Vorbild dieser optimierten Version begannen wir im nächsten Schritt eine parallelisierte Berechnung durch Verwendung von NEON/SIMD-Befehlen zu entwerfen.
-Dabei entstanden zwei verschiedene Ansätze, die sich in den Punkten „Einfachheit der Umsetzung“ und „Laufzeit“ deutlich unterschieden.
-Letztendlich entschieden wir uns gegen den Ansatz, in dem eine blockweise Parallelberechnung der Pixel vorgesehen war, und für den Ansatz, in welchem die Berechnung für mehrere Pixel gleichzeitig aber nicht blockweise abläuft.
-Dadurch werden bereits fertig berechnete Pixel durch den nächsten unberechneten Pixel ersetzt.
-Diese Variante haben wir effektiv umgesetzt.
-Zum Schluss haben wir unsere Implementierung noch so abgeändert, dass nicht nur ausgegeben wird, ob an einem Pixel die dazugehörige komplexe Zahl zur Mandelbrotmenge gehört, sondern auch ab welcher Anzahl an Iterationen erkannt wurde, dass sie nicht dazu gehört.
-\pagebreak
+
 \section{Lösungsfindung}
-Nachdem bekannt gegeben wurde welche Aufgabe unser Team bekommt hat sich zunächst jeder für sich mit der Mandelbrotmenga an sich beschäftigt.
+Nachdem bekannt gegeben wurde welche Aufgabe unser Team bekommt hat sich zunächst jeder für sich mit der Mandelbrotmenge an sich beschäftigt.
 Das hat uns in sofern geholfen, dass als wir uns zur ersten Besprechung getroffen haben jeder schon eine Ahnung davon hatte was überhaupt zu tun ist.
 Für uns alle war von vornherein die beste Möglichkeit an das Problem heranzugehen, zuerst das C-Programm mit Input und Output zu schreiben und uns dann an den Assembler-Teil setzen.
 
@@ -98,8 +96,6 @@ Mit dem gesammelten Wissen aus der simplen Single-Pixel Berechnung war die Imple
 Nach ein paar Fehlerausbesserungen funktionierte nun also auch die zweite Version.
 
 
-
-\pagebreak
 \section{Dokumentation der Implementierung}
 \subsection{Implementierung des C-Programms}
 Bevor wir zu der Umsetzung der Mandelbrotmenge kommen, wird zuerst die Ein/Ausgabe und Laufzeitanalyse in unserem C-Programm genauer erläutert.
@@ -183,9 +179,9 @@ Nun ziehen wir die beiden Quadrate von einander ab, also s8-s7 und speichern das
 Für den nächsten Schleifendurchlauf müssen der Imaginär und Realteil noch mit den jeweiligen Konstanten, also den aktuellen Positionswerten addiert werden.
 Anschließend wollen wir wissen, ob die Summe aus den beiden neuen Werten, welche sich in s5 und s6 befinden, eine bestimmte Grenze überschritten haben.
 Dafür quadrieren wir die Summe um leichter Negative Zahlen behandeln zu können und vergleichen das Ergebnis mit 4.
-Nun wird der Farbwert, welcher sich in r8 befindet, grundsätzlich auf 57 gesetzt, was einem weissen Pixel entspricht.
+Nun wird der Farbwert, welcher sich in r8 befindet, grundsätzlich auf 255 gesetzt, was einem weissen Pixel entspricht.
 Daraufhin springen wir je nachdem, ob bei dem vorherigen Vergleich das Ergebnis größergleich 4 war, zum Schleifenabbruch, was ein Label am Ende der Berechnungsschleife ist.
-Damit überspringen wir den Teil der also nur durchlaufen wird, wenn das Ergbnis kleiner 4 war. Dort wird nämlich der Farbwert auf 48, also Schwarz, gesetzt.
+Damit überspringen wir den Teil der also nur durchlaufen wird, wenn das Ergbnis kleiner 4 war. Dort wird nämlich der Farbwert auf 0, also Schwarz, gesetzt.
 Zudem wird der Schleifencounter in r9 um 1 verringert und wir springen zurück an den Schleifen Anfang der Berechnung, falls der Counter noch nicht kleiner als 0 geworden ist.
 Wenn der Counter jedoch kleiner 0 ist landen wir bei dem Label für den Schleifenabbruch, welcher zuvor erwähnt wurde.
 Dort wird lediglich der Farbwert in das Array, auf das der Pointer in r5 zeigt, abgespeichert und der Pointer anschließend um 1 erhöht.
@@ -230,7 +226,6 @@ Im weiterem Verlauf wird nun auf die konkrete Implementierung unseres Konzeptes 
   \end{center}
 \end{figure}
 
-\pagebreak
 \subsubsection{Konkrete Umsetzung}
 Bei unserer Umsetzung der Mandelbrotmenge  benutzen wir fast alle Resourcen, die uns der Prozessor zu verfügung stellt.
 Konkret bedeutet das, dass wir alle zulässigen allgemeinen Register benötigen. Deshalb werden alle Register auf dem Stack gesichert. Das Link-Register wird auch abgesichert, damit ein Rücksprungsmöglichkeit in das C-Programm erhalten bleibt.
@@ -444,8 +439,17 @@ Ist dies nicht der Fall lässt sich der Speicher auf $1/3$ des ursprünglich ben
 Da nun nur noch gespeichert werden muss ob das Pixel konvergiert oder nicht.
 Beim Abspeichern des Bildes in C müsste man dann nur noch die Pixelfarben entsprechend dem Eintrag berechnen und die drei Bytes in die Bitmapdatei schreiben.
 
-
-\subsection{Fazit}
+\section{Zusammenfassung des Projektes}
+Im Laufe des Projektes haben wir Schritt für Schritt einen funktionierenden Algorithmus entworfen und implementiert, der zur Berechnung der Mandelbrotmenge  genutzt werden kann.
+Ausgehend von einer prototypischen Implementierung in Pseudocode entwickelten wir zunächst einen funktionierenden Algorithmus in Assembler, welcher noch eine schlechte Performanz aufwies.
+Diesen Algorithmus optimierten wir im darauffolgenden Schritt unter den Gesichtspunkten Laufzeit und Speichernutzung.
+Nach dem Vorbild dieser optimierten Version begannen wir im nächsten Schritt eine parallelisierte Berechnung durch Verwendung von NEON/SIMD-Befehlen zu entwerfen.
+Dabei entstanden zwei verschiedene Ansätze, die sich in den Punkten „Einfachheit der Umsetzung“ und „Laufzeit“ deutlich unterschieden.
+Letztendlich entschieden wir uns gegen den Ansatz, in dem eine blockweise Parallelberechnung der Pixel vorgesehen war, und für den Ansatz, in welchem die Berechnung für mehrere Pixel gleichzeitig aber nicht blockweise abläuft.
+Dadurch werden bereits fertig berechnete Pixel durch den nächsten unberechneten Pixel ersetzt.
+Diese Variante haben wir effektiv umgesetzt.
+Zum Schluss haben wir unsere Implementierung noch so abgeändert, dass nicht nur ausgegeben wird, ob an einem Pixel die dazugehörige komplexe Zahl zur Mandelbrotmenge gehört, sondern auch ab welcher Anzahl an Iterationen erkannt wurde, dass sie nicht dazu gehört.
+\pagebreak
 
 
 
