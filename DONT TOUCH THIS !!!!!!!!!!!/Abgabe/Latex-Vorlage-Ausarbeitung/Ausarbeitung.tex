@@ -449,6 +449,14 @@ Letztendlich entschieden wir uns gegen den Ansatz, in dem eine blockweise Parall
 Dadurch werden bereits fertig berechnete Pixel durch den nächsten unberechneten Pixel ersetzt.
 Diese Variante haben wir effektiv umgesetzt.
 Zum Schluss haben wir unsere Implementierung noch so abgeändert, dass nicht nur ausgegeben wird, ob an einem Pixel die dazugehörige komplexe Zahl zur Mandelbrotmenge gehört, sondern auch ab welcher Anzahl an Iterationen erkannt wurde, dass sie nicht dazu gehört.
+
+
+Im Groben und Ganzen würden wir sagen, dass unser Programm zeiteffizient ist und eine saubere, funktionierende Implementierung der Berechnung der Mandelbrotmenge umsetzt.
+Diese weist allerdings noch einige Möglichkeiten zur Verbesserung auf.
+Wie im bisherigen Text bereits erwähnt könnte man die Speichernutzung des Algorithmus verbessern, indem man einige selten genutzte Werte nicht in den Registern sondern auf den Stack auslagert und sie gegebenenfalls wieder lädt.
+Außerdem berücksichtigt unser Programm nicht die Seitenverhältnisse des Mandelbrotausschnitts bei der Berechnung. Das bedeutet, dass auch bei der Berechnung auf nicht quadratischen Abschnitten der komplexen Zahlenebene ein quadratisches Bild ausgegeben wird.
+Ebenfalls könnte man den Algorithmus noch insofern verbessern, dass er auch andere Auflösungen als nur Vielfache von Vier, die größer als Vier sind, erlaubt und zu diesen ein korrektes Bild erstellt.
+Zudem ist der Assemblercode noch teilweise redundant und könnte übersichtlicher gestaltet werden.
 \pagebreak
 
 
