@@ -1,15 +1,14 @@
 \BOOKMARK [1][-]{section.1}{Problemstellung und Spezifikation}{}% 1
-\BOOKMARK [1][-]{section.2}{Zusammenfassung des Projektes}{}% 2
-\BOOKMARK [1][-]{section.3}{L\366sungsfindung}{}% 3
-\BOOKMARK [1][-]{section.4}{Dokumentation der Implementierung}{}% 4
-\BOOKMARK [2][-]{subsection.4.1}{Implementierung des C-Programms}{section.4}% 5
-\BOOKMARK [2][-]{subsection.4.2}{Implementierung Single-Pixel-Calculation}{section.4}% 6
-\BOOKMARK [3][-]{subsubsection.4.2.1}{Konzept}{subsection.4.2}% 7
-\BOOKMARK [3][-]{subsubsection.4.2.2}{Konkrete Umsetzung}{subsection.4.2}% 8
-\BOOKMARK [2][-]{subsection.4.3}{Implementierung Mult-Pixel-Calculation}{section.4}% 9
-\BOOKMARK [3][-]{subsubsection.4.3.1}{Konzept}{subsection.4.3}% 10
-\BOOKMARK [3][-]{subsubsection.4.3.2}{Konkrete Umsetzung}{subsection.4.3}% 11
-\BOOKMARK [2][-]{subsection.4.4}{Anwendung des Programmes}{section.4}% 12
-\BOOKMARK [1][-]{section.5}{Ergebnisse / Fazit}{}% 13
-\BOOKMARK [2][-]{subsection.5.1}{Ergebnisse und Optimierung}{section.5}% 14
-\BOOKMARK [2][-]{subsection.5.2}{Fazit}{section.5}% 15
+\BOOKMARK [1][-]{section.2}{L\366sungsfindung}{}% 2
+\BOOKMARK [1][-]{section.3}{Dokumentation der Implementierung}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{Implementierung des C-Programms}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{Implementierung Single-Pixel-Calculation}{section.3}% 5
+\BOOKMARK [3][-]{subsubsection.3.2.1}{Konzept}{subsection.3.2}% 6
+\BOOKMARK [3][-]{subsubsection.3.2.2}{Konkrete Umsetzung}{subsection.3.2}% 7
+\BOOKMARK [2][-]{subsection.3.3}{Implementierung Mult-Pixel-Calculation}{section.3}% 8
+\BOOKMARK [3][-]{subsubsection.3.3.1}{Konzept}{subsection.3.3}% 9
+\BOOKMARK [3][-]{subsubsection.3.3.2}{Konkrete Umsetzung}{subsection.3.3}% 10
+\BOOKMARK [2][-]{subsection.3.4}{Anwendung des Programmes}{section.3}% 11
+\BOOKMARK [1][-]{section.4}{Ergebnisse / Fazit}{}% 12
+\BOOKMARK [2][-]{subsection.4.1}{Ergebnisse und Optimierung}{section.4}% 13
+\BOOKMARK [1][-]{section.5}{Zusammenfassung des Projektes}{}% 14
