@@ -52,3 +52,11 @@ Der Assemblercode ist teils redundant und könnte übersichtlicher gestaltet werde
 \bibliographystyle{plain}
 \bibliography{references}
 \end{document}
+
+Neu: Verbesserungs möglichkeiten:
+Im Groben und Ganzen haben wir es geschafft ein funktionierendes Programm zu implementieren, welches die Berechnung der Mandelbrotmenge ausführt.
+Diese weist allerdings noch einige Möglichkeiten zur Verbesserung auf.
+Wie im bisherigen Text bereits erwähnt könnte man die Speichernutzung des Algorithmus verbessern, indem man einige selten genutzte Werte nicht in den Registern sondern auf den Stack auslagert und sie gegebenenfalls wieder lädt.
+Außerdem berücksichtigt unser Programm nicht die Seitenverhältnisse des Mandelbrotausschnitts bei der Berechnung. Das bedeutet, dass auch bei der Berechnung auf nicht quadratischen Abschnitten der komplexen Zahlenebene ein quadratisches Bild ausgegeben wird.
+Ebenfalls könnte man den Algorithmus noch insofern verbessern, dass er auch andere Auflösungen als nur Vielfache von Vier, die größer als Vier sind, erlaubt und zu diesen ein korrektes Bild erstellt.
+Zudem ist der Assemblercode noch teilweise redundant und könnte übersichtlicher gestaltet werden.
