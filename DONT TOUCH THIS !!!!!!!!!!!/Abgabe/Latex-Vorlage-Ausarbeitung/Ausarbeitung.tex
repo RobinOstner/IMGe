@@ -415,7 +415,7 @@ Mit der implementierten Laufzeitanalyse wurden für alle zulässigen Auflösunge
 Anschließend wurde der Mittelwert aus den zehn erhaltenen Zeiten gebildet und miteinander verglichen.
 In \autoref{fig:v-Vergleich} wurde die Laufzeit der Single-Pixel-Calculation durch die der parallelen Berechnung geteilt um somit einen Faktor zu erhalten um wie viel schneller die Multi-Pixel-Calculation ist.
 Zunächst nahmen wir an, dass die einfache Berechnung in den niedrigen Auflösungsbereichen schneller als die parallele sei. Jedoch zeigt sich auch in diesen Bereich, dass die parallele Berechnung schneller ist.
-Allerdings erwartet man, dass sie circa drei mal so schnell sei, da anstelle von einem Pixel vier Pixel auf einmal bearbeitet werden.
+Allerdings erwartet man, dass sie circa vier mal so schnell sei, da anstelle von einem Pixel vier Pixel auf einmal bearbeitet werden.
 Diese Diskrepanz lässt sich dadurch erklären, dass die NEON-Einheit für die parallele Berechnung zusätzliche Schritte unternehmen muss um die Berechnungen parallel durchzuführen.
 Die durschnittliche halbierung der Laufzeit ist in etwa das, was am Ende zu erwarten war.
 
