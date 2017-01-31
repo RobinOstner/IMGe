@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6210 64-bit) (preloaded format=pdflatex 2017.1.30)  31 JAN 2017 20:20
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6210 64-bit) (preloaded format=pdflatex 2017.1.30)  31 JAN 2017 20:32
 entering extended mode
 **./Ausarbeitung.tex
 (Ausarbeitung.tex
@@ -1286,7 +1286,7 @@ Package rerunfilecheck Info: File `Ausarbeitung.out' has not changed.
 Here is how much of TeX's memory you used:
  25673 strings out of 493333
  483701 string characters out of 3130143
- 725408 words of memory out of 3000000
+ 725410 words of memory out of 3000000
  28570 multiletter control sequences out of 15000+200000
  31713 words of font info for 143 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1302,7 +1302,7 @@ ata/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Use
 rs/Ostne/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/palatino/uplb8a.pfb>
 <C:/Users/Ostne/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/palatino/uplr
 8a.pfb>
-Output written on Ausarbeitung.pdf (16 pages, 828293 bytes).
+Output written on Ausarbeitung.pdf (16 pages, 828325 bytes).
 PDF statistics:
  239 PDF objects out of 1000 (max. 8388607)
  39 named destinations out of 1000 (max. 500000)
